@@ -14,9 +14,9 @@ exports.auth=async(req,res,next)=>{
             })
         }
         const {courseId}=req.body;
-        if(courseId){
-            console.log("courseId from auth", courseId);
-        }
+        //if(courseId){
+         //   console.log("courseId from auth", courseId);
+        //}
         //verify token
         try{
             // console.log("Token",token);
