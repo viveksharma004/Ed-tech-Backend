@@ -28,7 +28,7 @@ exports.sendOTP = async (req, res) => {
     }
 
     var otp=OTPGenerator();
-    // console.log("OTP Generated",otp);
+    console.log("OTP Generated",otp);
 
     // check uniqueness of the otp
     let result=await OTP.findOne({otp:otp});
@@ -45,7 +45,7 @@ exports.sendOTP = async (req, res) => {
     }
 
     const otpBody=await OTP.create({email:email,otp:otp});
-    console.log("Otp Created to DB",otpBody);
+    // console.log("Otp Created to DB",otpBody);
 
     res.status(200).json({
         success:true,
@@ -93,7 +93,7 @@ exports.signUp=async (req, res) => {
 
         //find most recent otp stored in the db
         const recentOTP=await OTP.findOne({email}).sort({createdAt:-1}).limit(1);
-        console.log("Recent OTP :", recentOTP)
+        // console.log("Recent OTP :", recentOTP)
         //validate otp 
         if(recentOTP.length==0){
             return res.status(400).json({
@@ -220,7 +220,7 @@ exports.changePassword=async (req,res)=>{
     const email=req.user.email;
     const userData=await User.findOne({email:email});
     const match = await bcrypt.compare(oldPassword, userData.password);
-    console.log("value of match::",match);
+    // console.log("value of match::",match);
     if(match){
         const email=req.user.email;
         const hashedPassword=await bcrypt.hash(password,10);

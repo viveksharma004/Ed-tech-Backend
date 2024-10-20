@@ -26,7 +26,7 @@ exports.updateCourseProgress = async (req, res) => {
       const newProgress=await CourseProgress.create({courseId: courseId,
         userId: userId,completedVideos:subSectionId});
         
-        console.log("Newly created progress",newProgress)
+        // console.log("Newly created progress",newProgress)
       return res.status(200).json({
         success: true,
         message: "Course progress updated",

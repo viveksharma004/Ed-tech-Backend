@@ -17,7 +17,7 @@ exports.createRatingAndReview=async(req,res)=>{
                 match: {_id: userId}
             }
         )
-        console.log("Found the user ",courseDetails);
+        // console.log("Found the user ",courseDetails);
         if(!courseDetails){
             return res.status(404).json({
                 success:false,
@@ -45,7 +45,7 @@ exports.createRatingAndReview=async(req,res)=>{
             }
         },{new:true});
 
-        console.log("Updated rw",ratingReview);
+        // console.log("Updated rw",ratingReview);
         return res.status(200).json({
             success:true,
             message:"RW created successfully"
@@ -81,7 +81,7 @@ exports.getAverageRating=async (req,res)=>{
             }
         }
     ]);
-    console.log(result);
+    // console.log(result);
     if(result.length>0){
         return res.status(200).json({
             success:true,

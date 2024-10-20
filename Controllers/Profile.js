@@ -266,7 +266,7 @@ exports.getEnrolledCourses = async (req, res) => {
         phoneNo,}=req.body;
         const bodyData=contactUsEmail(firstname ,lastname,phoneNo,message,countrycode,email);
         const response=await mailSender(email,"Thank You for Contacting Us from StudyNotion",bodyData);
-        console.log("email response ",response);
+        // console.log("email response ",response);
         return res.status(200).json({
           success:true,
           message:"Mail sent successfully..."

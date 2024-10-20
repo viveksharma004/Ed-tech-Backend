@@ -27,7 +27,7 @@ exports.createCourse=async (req,res)=>{
         //check for the instructor and getting the object id of the instructor
         const userId=req.user.id;
         const instructorDetails=await User.findById(userId);
-        console.log("Instructors data",instructorDetails);
+        // console.log("Instructors data",instructorDetails);
 
         if(!instructorDetails){
             return res.status(404).json({
@@ -58,7 +58,7 @@ exports.createCourse=async (req,res)=>{
             thumbnail:thumbnailImage.secure_url,
             instructions:instructions,
         });
-        console.log("Newly created Course",newCourse);
+        // console.log("Newly created Course",newCourse);
 
         //add new course to user schema of instructor
         await User.findByIdAndUpdate({_id:instructorDetails._id},
@@ -150,7 +150,7 @@ exports.getCourseDetails=async (req,res)=>{
                                                                         })
                                                                         .exec();
         // courseDetails.instructor.password=null;
-        console.log(courseDetails);
+        // console.log(courseDetails);
         if(!courseDetails){                                                               
             return res.status(404).json({
                 success:false,
@@ -196,7 +196,7 @@ exports.editCourse = async (req, res) => {
   
       // If Thumbnail Image is found, update it
       if (req.files) {
-        console.log("thumbnail update")
+        // console.log("thumbnail update")
         const thumbnail = req.files.thumbnailImage
         const thumbnailImage = await uploadImageToCloudinary(
           thumbnail,
@@ -351,7 +351,7 @@ exports.deleteCourse = async (req, res) => {
         userId: userId,
       })
   
-      console.log("courseProgressCount : ", courseProgressCount)
+      // console.log("courseProgressCount : ", courseProgressCount)
   
       if (!courseDetails) {
         return res.status(400).json({

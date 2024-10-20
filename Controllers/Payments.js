@@ -4,8 +4,8 @@ const User=require("../Models/User");
 const mailSender=require("../Utils/mailSender")
 // const courseEnrollmentEmail=require("../mailTemplate/courseEnrollmentEmail");
 const { default: mongoose } = require("mongoose");
-
-
+const {paymentSuccessEmail}=require("../mail/templates/paymentSuccessEmail");
+const crypto=require("crypto");
 
 
 exports.capturePayment= async (req,res)=>{
@@ -25,14 +25,16 @@ exports.capturePayment= async (req,res)=>{
         let course;
         try{
             course=await Course.findById(course_id);
+            totalAmount+=course.price;
             if(!course){
                 return res.status(200).json({
                     success:false,
                     message :"Could not find course"
                 })
             }
-            const uid=new mongoose.Types.ObjectId(userId);
-            if(course.studentsEnrolled.includes(uid)){
+            // const uid=new mongoose.Types.ObjectId(userId);
+            if(course.studentsEnrolled.includes(userId)){
+                totalAmount=0;
                 return res.status(200).json(
                     {
                         success:false,
@@ -53,11 +55,12 @@ exports.capturePayment= async (req,res)=>{
     const options={
         amount:totalAmount*100,
         currency:"INR",
-        receipt:Math.random(Date.now().toString()),
+        receipt:Number(Math.random(Date.now()*10000000)).toString(),
     }
 
     try{
         const paymentResponse=await instance.orders.create(options);
+        // console.log(paymentResponse);
         return res.json({
             success:true,
             message:paymentResponse
@@ -89,12 +92,15 @@ exports.verifyPayment=async (req,res)=>{
             })
         }
 
+        // console.log("All details from signature ",razorpay_order_id,razorpay_payment_id,razorpay_signature,courses,userId);
+
         let body=razorpay_order_id + "|" +razorpay_payment_id;
         const expectedSignature=crypto
                                 .createHmac("sha256",process.env.RAZORPAY_SECRET)
                                 .update(body.toString())
                                 .digest("hex");
 
+                                // console.log("Expected Signature : ",expectedSignature,)
         if(expectedSignature==razorpay_signature){
             //enroll in courses
             await enrollStudents(courses,userId,res)
@@ -110,7 +116,8 @@ exports.verifyPayment=async (req,res)=>{
             message:"Payment Failed"
         })
     }catch(err){
-
+        console.log("Error during payment capture",err);
+        // console.log(err.message)
     }
 }
 
@@ -176,9 +183,9 @@ const enrollStudents=async(courses,userId, res)=>{
                 })
             }
     
-            const enrolledStudent=await User.findOneAndUpdate(userId,
+            const enrolledStudent=await User.findOneAndUpdate({_id:userId},
                 {
-                    $Push:{
+                    $push:{
                         courses:courseId
                     }
                 },{
@@ -192,7 +199,7 @@ const enrollStudents=async(courses,userId, res)=>{
                     message:"User enrollment failed",
                 })
             }
-    
+            return ;
             // const emailResponse=await mailSender(
             //     enrollStudents.email,
             //     `Successfully Enrolled into ${enrolledCourse.courseName}`,
